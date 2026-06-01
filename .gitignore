@@ -1,0 +1,11 @@
+# Nextflow work directory and temporary files
+work/
+.nextflow.log
+.nextflow/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# VS Code settings
+.vscode/
