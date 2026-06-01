@@ -1,0 +1,15 @@
+name: hipstr-pipeline
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - cyvcf2
+  - samtools
+  - bcftools
+  - htslib
+  - openjdk=17
+  - wget
+  - pip

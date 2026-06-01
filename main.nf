@@ -15,7 +15,6 @@ params.regions = params.regions ?: 'ref/hg38.hipstr_reference.bed'
 params.segdup = params.segdup ?: 'sample/hg38_segdup.sorted.bed.gz'
 params.cram_download_list = params.cram_download_list ?: 'sample/cram_download.txt'
 params.cram_list = params.cram_list ?: 'sample/cram.txt'
-params.left_cram_list = params.left_cram_list ?: 'sample/left_cram.txt'
 params.filtered_vcf_list = params.filtered_vcf_list ?: 'sample/filtered_vcf.txt'
 params.correct_vcf_list = params.correct_vcf_list ?: 'sample/correct_vcf.txt'
 params.chrs_list = params.chrs_list ?: 'processed/chrs.txt'
@@ -24,6 +23,7 @@ params.mergeSTR = params.mergeSTR ?: '/cfs/earth/scratch/xiaf/bin/mergeSTR/bin/m
 params.dumpSTR = params.dumpSTR ?: '/cfs/earth/scratch/xiaf/bin/STRTools/strtools_venv/bin/dumpSTR'
 params.correction_script = params.correction_script ?: 'hipstr_correction.py'
 params.vcf_to_matrix = params.vcf_to_matrix ?: 'hipstr_vcf.py'
+params.min_var = params.min_var ?: 0.1
 params.samtools = params.samtools ?: 'samtools'
 params.bcftools = params.bcftools ?: 'bcftools'
 params.tabix = params.tabix ?: 'tabix'
@@ -98,7 +98,7 @@ process checkCrai {
         fi
         echo "Checking index for $CRAM"
         ${params.samtools} index "$CRAM" -o "$CRAI"
-    done < ${params.left_cram_list}
+    done < ${params.cram_list}
     touch crai_check.done
     """
 }
@@ -245,7 +245,7 @@ process convertVCFs {
     mkdir -p ${params.df_dir}
     while IFS= read -r VCF_NAME; do
         vcf=${params.correct_dir}/${VCF_NAME}
-        python ${params.vcf_to_matrix} -i "$vcf" -o "${params.df_dir}/"
+        python ${params.vcf_to_matrix} -i "$vcf" -o "${params.df_dir}/" --min-var ${params.min_var}
     done < ${params.correct_vcf_list}
     touch convert.done
     """
